@@ -3,15 +3,26 @@
 ## A demo app
 Sometimes the best way to get a new language into your organization is with a port of something you've already got.
 
-I've used this stack and structure a few times for microservices. I find it easy to deal with and easy to use to carry forward some of the warts that might exist in legacy projects.
+I've used this stack and structure a few times for microservices. I find it easy to deal with and flexible enough to carry forward some of the (sadly necessary) warts that might exist in legacy projects.
+
+## Prerequisites/Conventions
+
+* Use a Makefile to make common tasks easy
+* Use Make to install non-app deps like Ginkgo, Goose, Glide
+* Use `jq` for grabbing config info in Make tasks
+* Config lives in `$HOME/.<APP_NAME>`
+* DB info lives in `config.json` in the config dir
 
 ## Stack
 
 * [Gorilla Mux](https://github.com/gorilla/mux) - URL routing
 * [Logrus](https://github.com/sirupsen/logrus) - configurable logging
 * [Negroni](https://github.com/urfave/negroni) - middleware management
-* [Gorm](https://github.com/jinzhu/gorm) - ORM (map SQL tables to structs)
-* [Ginkgo](https://github.com/onsi/ginkgo) - BDD-style testing (just for DB unit tests - don't freak)
+* [Viper](https://github.com/spf13/viper) - unified configuration
+* [Gorm](https://github.com/jinzhu/gorm) - ORM-style DB access
+* [Ginkgo](https://github.com/onsi/ginkgo) - BDD-style testing (just for DB unit tests)
+* [Glide](https://github.com/Masterminds/glide) - dependency management
+* [Goose](https://github.com/pressly/goose) - DB migrations (not a huge fan of this one)
 
 ## Structure
 Here's how I structure into subpackages and directories:
@@ -21,7 +32,7 @@ Here's how I structure into subpackages and directories:
 	* `github_user_controller.go` - an example of dividing up the `controllers` package into handlers corresponding to groups of routes
 
 * **db**
-	* `db.go` - interface and concrete types and connection establishment
+	* `db.go` - interface and concrete type declarations and connection establishment
 	* `github_user.go` - an example of dividing up the `db` package into type-specific files
 
 * **middleware**
