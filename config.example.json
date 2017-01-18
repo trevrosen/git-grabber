@@ -1,0 +1,23 @@
+{
+	"development": {
+		"name": "gg_development",
+		"user": "root",
+		"pass": "",
+		"host": "localhost",
+		"port": "3306"
+	},
+	"test": {
+		"name": "gg_test",
+		"user": "root",
+		"pass": "",
+		"host": "localhost",
+		"port": "3306"
+	},
+	"production": {
+		"name": "gg_production",
+		"user": "joebob",
+		"pass": "mahpasswerd",
+		"host": "localhost",
+		"port": "3306"
+	}
+}

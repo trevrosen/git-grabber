@@ -3,19 +3,44 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
+	"github.com/trevrosen/git-grabber/middleware"
+	"github.com/urfave/negroni"
 )
 
-func App(dbi db.DBInteractor) http.Handler {
-	router := mux.NewRouter().StripSlash(true)
+func App() http.Handler {
+	router := mux.NewRouter().StrictSlash(true)
 
-	router.HandleFunc("/username/{username}", usernameShowHandler()).Method("GET")
+	router.HandleFunc("/status", statusHandler()).Methods("GET")
+	//router.HandleFunc("/username/{username}", usernameShowHandler()).Method("GET")
 
-	// TODO: add logging middleware
+	n := negroni.New(negroni.NewRecovery())
+	n.Use(middleware.NewGGLogger())    // Log with Logrus
+	n.Use(middleware.NewContentType()) // Ensure response Content-Type header is always "application/json"
+	n.UseHandler(router)
+	return n
 }
 
-func usernameShowHandler(dbi db.DBInteractor) http.HandlerFunc {
+// statusHandler handles GET /status
+// provides system status information
+func statusHandler() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
+		w.Write([]byte("Up and running"))
+		logMsg(r, "All systems nominal, Captain")
 	})
+}
+
+//func usernameShowHandler(dbi db.DBInteractor) http.HandlerFunc {
+//return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+//})
+//}
+
+// logMsg sets a logging message on the middleware.HttpInformer that is set up for each request
+// by the logging middleware
+func logMsg(r *http.Request, msg string) {
+	httpInformant := context.Get(r, middleware.HttpInformantKey)
+	hi := httpInformant.(*middleware.HttpInformant)
+	hi.SetMessage(msg)
 }

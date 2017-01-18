@@ -5,11 +5,11 @@ excluding_vendor := $(shell go list ./... | grep -v /vendor/)
 
 GIT_GRABBER_ENVIRONMENT ?= development
 
-GIT_GRABBER_DB_HOST := $(shell jq --raw-output $(GIT_GRABBER_ENVIRONMENT).host < ~/.git-grabber/config.json)
-GIT_GRABBER_DB_NAME := $(shell jq --raw-output $(GIT_GRABBER_ENVIRONMENT).name < ~/.git-grabber/config.json)
-GIT_GRABBER_DB_PASS := $(shell jq --raw-output $(GIT_GRABBER_ENVIRONMENT).pass < ~/.git-grabber/config.json)
-GIT_GRABBER_DB_PORT := $(shell jq --raw-output $(GIT_GRABBER_ENVIRONMENT).port < ~/.git-grabber/config.json)
-GIT_GRABBER_DB_USER := $(shell jq --raw-output $(GIT_GRABBER_ENVIRONMENT).user < ~/.git-grabber/config.json)
+GIT_GRABBER_DB_HOST := $(shell jq --raw-output .$(GIT_GRABBER_ENVIRONMENT).host < ~/.git-grabber/config.json)
+GIT_GRABBER_DB_NAME := $(shell jq --raw-output .$(GIT_GRABBER_ENVIRONMENT).name < ~/.git-grabber/config.json)
+GIT_GRABBER_DB_PASS := $(shell jq --raw-output .$(GIT_GRABBER_ENVIRONMENT).pass < ~/.git-grabber/config.json)
+GIT_GRABBER_DB_PORT := $(shell jq --raw-output .$(GIT_GRABBER_ENVIRONMENT).port < ~/.git-grabber/config.json)
+GIT_GRABBER_DB_USER := $(shell jq --raw-output .$(GIT_GRABBER_ENVIRONMENT).user < ~/.git-grabber/config.json)
 
 DEPEND=\
 	github.com/onsi/ginkgo \
