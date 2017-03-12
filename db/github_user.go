@@ -1,8 +1,10 @@
 package db
 
+import "github.com/jinzhu/gorm"
+
 // GitHubUser represents a user of GitHub (shockingly)
 type GitHubUser struct {
-	ID
+	gorm.Model
 	Username string
 }
 

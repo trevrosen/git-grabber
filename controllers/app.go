@@ -5,15 +5,17 @@ import (
 
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
+	"github.com/trevrosen/git-grabber/db"
 	"github.com/trevrosen/git-grabber/middleware"
 	"github.com/urfave/negroni"
 )
 
-func App() http.Handler {
+func App(dbi db.DBInteractor) http.Handler {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/status", statusHandler()).Methods("GET")
-	//router.HandleFunc("/username/{username}", usernameShowHandler()).Method("GET")
+	router.HandleFunc("/users/", userCreateHandler(dbi)).Methods("POST")
+	router.HandleFunc("/users/{username}", userShowHandler(dbi)).Methods("GET")
 
 	n := negroni.New(negroni.NewRecovery())
 	n.Use(middleware.NewGGLogger())    // Log with Logrus
@@ -30,12 +32,6 @@ func statusHandler() http.HandlerFunc {
 		logMsg(r, "All systems nominal, Captain")
 	})
 }
-
-//func usernameShowHandler(dbi db.DBInteractor) http.HandlerFunc {
-//return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-//})
-//}
 
 // logMsg sets a logging message on the middleware.HttpInformer that is set up for each request
 // by the logging middleware

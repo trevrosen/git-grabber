@@ -2,35 +2,43 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
-	"github.com/bypasslane/alicia/middleware"
-	"github.com/gorilla/context"
+	"github.com/spf13/viper"
 	"github.com/trevrosen/git-grabber/controllers"
+	"github.com/trevrosen/git-grabber/db"
 )
 
+var sdb *db.SqlDB
+
 func main() {
-	// establish environment
+	var err error
+	setConfig()
 
-	// allow override of environment via flag
+	// TODO: allow override of environment via flag
 
-	//
+	sdb, err = db.NewSqlDB()
 
-	bindAndRun()
+	if err != nil {
+		log.Println("there was an error establishing DB connection: ", err.Error())
+	}
+	sdb.Gorm.AutoMigrate(&db.GitHubUser{})
+	bindAndRun(sdb)
 }
 
 // bindAndRun starts the server
-func bindAndRun() {
+func bindAndRun(sdb *db.SqlDB) {
 	//portString := fmt.Sprintf(":%v", viper.GetString("port"))
 	portString := ":4005"
 	fmt.Printf("[-] Listening on %v\n", portString)
-	http.ListenAndServe(portString, controllers.App())
+	http.ListenAndServe(portString, controllers.App(sdb))
 }
 
-// logMsg sets a logging message on the middleware.HttpInformer that is set up for each request
-// by the logging middleware
-func logMsg(r *http.Request, msg string) {
-	httpInformant := context.Get(r, middleware.HttpInformantKey)
-	hi := httpInformant.(*middleware.HttpInformant)
-	hi.SetMessage(msg)
+// setConfig sets up configuration for the app
+func setConfig() error {
+	viper.SetDefault("environment", "development")
+	viper.SetConfigName("config")
+	viper.AddConfigPath("$HOME/.git-grabber")
+	return viper.ReadInConfig()
 }

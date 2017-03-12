@@ -5,6 +5,11 @@ Sometimes the best way to get a new language into your organization is with a po
 
 I've used this stack and structure a few times for microservices. I find it easy to deal with and flexible enough to carry forward some of the (sadly necessary) warts that might exist in legacy projects.
 
+## What it does
+* Allow you to specify a GitHub user you want to track
+* Retrieve some information about that user
+* Uses MySQL for a backend
+
 ## Prerequisites/Conventions
 
 * Use a Makefile to make common tasks easy
@@ -12,6 +17,7 @@ I've used this stack and structure a few times for microservices. I find it easy
 * Use `jq` for grabbing config info in Make tasks
 * Config lives in `$HOME/.<APP_NAME>`
 * DB info lives in `config.json` in the config dir
+* Glide is the package manager
 
 ## Stack
 

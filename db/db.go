@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strings"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 )
 
 // DBInteractor is the interface for talking to a database
 type DBInteractor interface {
-	FindGitHubUserByName(string) GitHubUser
+	FindGitHubUserByName(string) (*GitHubUser, error)
 }
 
 // SqlDB implements DBInteractor for a Gorm
@@ -22,9 +23,9 @@ type SqlDB struct {
 }
 
 // NewSqlDB initializes a SqlDB with a connection to the SQL DB
-func NewSqlDB(dbName string) (*SqlDB, error) {
+func NewSqlDB() (*SqlDB, error) {
 	ndb := &SqlDB{
-		ConnectionString: dbString(dbName),
+		ConnectionString: dbString(),
 	}
 	return ndb, ndb.establishConnection()
 }
@@ -36,12 +37,12 @@ func (sdb *SqlDB) establishConnection() error {
 	return err
 }
 
-func dbString(dbName string) string {
+func dbString() string {
 	environment := viper.GetString("environment")
-	user := viper.GetString(strings.Join([]string{dbName, environment, "user"}, "."))
-	pass := viper.GetString(strings.Join([]string{dbName, environment, "pass"}, "."))
-	host := viper.GetString(strings.Join([]string{dbName, environment, "host"}, "."))
-	port := viper.GetString(strings.Join([]string{dbName, environment, "port"}, "."))
-	name := viper.GetString(strings.Join([]string{dbName, environment, "name"}, "."))
+	user := viper.GetString(strings.Join([]string{environment, "user"}, "."))
+	pass := viper.GetString(strings.Join([]string{environment, "pass"}, "."))
+	host := viper.GetString(strings.Join([]string{environment, "host"}, "."))
+	port := viper.GetString(strings.Join([]string{environment, "port"}, "."))
+	name := viper.GetString(strings.Join([]string{environment, "name"}, "."))
 	return fmt.Sprintf("%v:%v@(%v:%v)/%v?parseTime=true", user, pass, host, port, name)
 }
