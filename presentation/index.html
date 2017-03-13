@@ -1,0 +1,411 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Go Forth and Port a Thing!</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>Go Port a Thing!</h1>
+					<h3>an opinionated guide</h3>
+					<small>by <a href="https://github.com/trevrosen">@trevrosen</a></small>
+					<br />
+					<small>(download <a href="https://github.com/trevrosen/git-grabber">https://github.com/trevrosen/git-grabber</a>)</small>
+				</section>
+				<section>
+					"software is eating everything"
+					<aside class="notes">
+						* we know that more and more software is being created
+						* more and more jobs/functions require software
+						* software makes it into more and more places
+					</aside>
+				</section>
+
+				<section>
+					Not all of it is the new hotness
+				</section>
+
+				<section>
+					<h4>"dark-matter developers"</h4>
+					<ul>
+						<li>writing the software that quietly runs the world</li>
+						<li>don't go to cons, read HackerNews</li>
+						<li>never working on the latest, coolest stuff</li>
+					</ul>
+					<aside class="notes">
+						A language like Go should be trying to get more of these people
+					</aside>
+				</section>
+
+				<section>
+					<blockquote>
+						"They are out there, they are quiet, but they are using out stuff to get stuff done."
+					</blockquote>
+						<p><a href="http://www.hanselman.com/blog/DarkMatterDevelopersTheUnseen99.aspx">Dark Matter Developers - The Unseen 99%</a>
+						<aside class="notes">
+							<ul>
+								<li>Almost all of us are dark matter devs at one time or another</li>
+								<li>much of the time, only the downstream product matters - our code just enables it</li>
+							</ul>
+						</aside>
+				</section>
+
+				<section>
+					It's easy to be stuck
+					<aside class="notes">
+						<ul>
+							<li>People naturally fear change - especially software orgs.</li>
+							<li>But they also want to move forward. Just as soon as...</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					Go is perfect for these people (and for you)
+				</section>
+
+				<section>
+					<h2>Go proves you don't need to use old tech</h2>
+					<ul>
+						<li>An official Google language</li>
+						<li>Containerized ops revolution does wonders for cred</li>
+						<li>"batteries included" massive stdlib keeps deps count low</li>
+						<li>static bins maximize deployability and options for porting</li>
+					</ul>
+					<aside class="notes">
+						Hanselman talks about people using "10-year-old" tech, but Go is perfectly (uniquely?) suited to jump that timeline
+					</aside>
+				</section>
+
+				<section>
+					<h2>Places Go shines</h2>
+					<ul>
+						<li>small network services</li>
+						<li>command line tools</li>
+						<li>one-off solutions for customers</li>
+					</ul>
+				</section>
+
+				<section>
+					So take some inspiration from the dark matter devs quietly getting tons done.
+					Resolve to put something into production with Go in 2017.
+				</section>
+
+				<section>
+					<section>
+						<h3>Pick a port, (not) any port</h3>
+					</section>
+
+					<section>
+						What makes for a good porting candidate?
+					</section>
+
+					<section>
+						<ul>
+							<li>Small enough to take on solo</li>
+							<li>Important enough that people care</li>
+							<li>Not too high-visibility </li>
+						</ul>
+						<aside class="notes">
+							<ul>
+								<li>You don't want to have to get a co-worker involved unless you've already got a partner</li>
+								<li>You want to work on this at work - not just on spec</li>
+								<li>You don't want too many people breathing down your neck - no one loves a committee</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Permission</h2>
+						<ul>
+							<li>get it</li>
+							<li>from the right person</li>
+							<li>not from every person</li>
+						</ul>
+						<aside class="notes">
+							<ul>
+								<li>don't go rogue - businesses hate that</li>
+								<li>don't go look for everyone to say yes first - identify the minimal number of stakeholders that let you do it responsibly</li>
+								<li>make sure someone important is in favor of what you're doing - you'll need an advocate later</li>
+								<li>Remember that you're on the clock - someone is gambling on you. Respect that. Commit to delivery.</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<h2>Nip FUD in the Bud</h2>
+						<ul>
+							<li>Fear, Uncertainty, and Doubt can cause a port project to die a death by a thousand cuts</li>
+							<li>Data is FUD's mortal enemy - get some</li>
+							<li>People fear what they don't understand - instrument your port with NewRelic, Sentry, and the like</li>
+							<li>Make a plan to make this real software from day one</li>
+						</ul>
+						<aside class="notes">
+							You'll hear a million times "oh new problem X must be because of the port". You need to be ready to constantly beat that back.
+						</aside>
+					</section>
+
+					<section>
+						Quick Real-world tale: my own port
+					</section>
+
+					<section>
+						<ul>
+							<li>Authentication/authorization service for a rapidly monoservice-ifying environment</li>
+							<li>Port from a Rails app which was first attempt at extracting security functionality</li>
+							<li>Many random warts that needed to be accomodated</li>
+							<li>Port took about 6 weeks, much of which was my own learning curve climb</li>
+							<li>Work paid for my learn-facepalm-refactor cycle</li>
+						</ul>
+					</section>
+
+					<section>
+						Result?
+					</section>
+
+					<section>
+						<ul>
+							<li>Serves ~1.5 million requests per day</li>
+							<li>Mean: 22ms</li>
+							<li>Median: 7ms</li>
+							<li>99p: 95ms</li>
+						</ul>
+						<aside class="notes">
+							Good enough for now. No attempt to optimize these numbers
+						</aside>
+					</section>
+
+					<section>
+						How's the buisness feel about this?
+					</section>
+
+					<section>
+						<ul>
+							<li>According to ops, this is our most highly-trafficked service</li>
+							<li>Also our most reliable service</li>
+						</ul>
+					</section>
+
+					<section>
+						We now have two other Go-based services in production or pre-production, as well as a wealth of internal tools.
+					</section>
+
+					<section>
+						With the next released service (April), Go will be an officially adopted tech.
+					</section>
+
+					<section>
+						<h2>Key Findings</h2>
+					</section>
+
+					<section>
+						(Conclusions I came to so that you don't have to!)
+					</section>
+
+					<section>
+						<ul>
+							<li>Opinionated frameworks save time on greenfield projects, suck time on ports</li>
+							<li>Stay away from "magic"</li>
+							<li>Some community guidelines are useful, some are not.</li>
+							<li>Be ready to lack things you love from $FAVORITE_FRAMEWORK</li>
+						</ul>
+						<aside class="notes">
+							<ul>
+								<li>Don't try to port something using something like Goa - making your old thing adapt to the framework is a useless time suck</li>
+								<li>You'll be learning a lot here, so take the time to learn the moving parts - it pays off later</li>
+								<li>Example: "use libs that work well with standard library" (good advice). "Never use any testing stuff but stdlib's testing package" (dogma)</li>
+							</ul>
+						</aside>
+					</section>
+
+				</section>
+
+				<section>
+					<h2>One Man's Stack</h2>
+				</section>
+
+				<section>
+					First a note on your new best friends
+				</section>
+
+				<section>
+					<ul>
+						<li><a href="https://www.getpostman.com">Postman</a></li>
+						<li><a href="http://mrbook.org/blog/tutorials/make/">Make</a></li>
+						<li><a href="https://github.com/stedolan/jq">#</a>jq</li>
+					</ul>
+					<aside class="notes">
+						<ul>
+							<li>Postman is an incredible tool for building up an HTTP API with external calls</li>
+							<li>You'll miss the booted "environment" of your app of you're coming from Rails, Django, or Express</li>
+							<li>A Makefile is key to wrangling all the little tasks around your project</li>
+							<li>jq lets you easily deal with JSON-based config files from inside Make or shell</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					<section>
+					<h2>Opinions on testing</h2>
+					</section>
+
+					<section>
+						Use native testing package as much as possible
+					</section>
+
+					<section>
+						<ul>
+							<li>Tests run crazy fast</li>
+							<li>Lots of useful features and idioms for free</li>
+							<li>Use for handlers, helpers, middleware, sub-package testing</li>
+							<li>Don't use for DB unit tests</li>
+						</ul>
+						<aside class="notes">
+							You'll want a real DB in place for your DB method unit tests. Having a test runner framework that helps with that is key. I find this division useful, simple, robust.
+						</aside>
+					</section>
+
+					<section>
+						Have discreet interfaces that implement DB functions, and use Ginkgo to test them.
+					</section>
+
+					<section>
+						<ul>
+							<li>Interfaces are easy to stub in integration tests</li>
+							<li>Helps keep separation of concerns neat</li>
+						</ul>
+					</section>
+
+					<section>
+						Why Ginkgo?
+					</section>
+
+					<section>
+						<ul>
+							<li>I've found that BDD-style frameworks are really nice for DB tests</li>
+							<li>Fine-grained setup/teardown hooks make setting up object graphs a cinch</li>
+							<li>Hooks let you guarantee state of your database</li>
+						</ul>
+						<aside class="notes">
+							Lots of your application's functionality is likely to be transactional database stuff. You need to keep that complex query under test against a real schema? Just use Ginkgo.
+						</aside>
+					</section>
+
+					<section>
+						<h2>The Rest of the Stack</h2>
+					</section>
+
+					<section>
+						URL multiplexing and routing with Gorilla Mux
+					</section>
+
+					<section>
+						<ul>
+							<li>Organize your routes into logical groupings</li>
+							<li>Deconstruct URLs into variables/values</li>
+							<li>Match on HTTP methods, path prefixes, more</li>
+						</ul>
+						<aside class="notes">
+							There are a lot of routers out there. Gorilla is a great one and it plays well with lots of other things.
+						</aside>
+					</section>
+
+					<section>
+						Gorm for ORM stuff
+					</section>
+
+					<section>
+						<ul>
+							<li>ORMs aren't for everything. Just for lots of things.</li>
+							<li>Powerful, chainable scoping behavior</li>
+							<li>Active Record pattern</li>
+							<li>Tag-based field customizations for indices, etc</li>
+						</ul>
+						<aside class="notes">
+							I find ORM hate naive and have no time for it. The vast majority of your DB interactions in a transactional web application are simple interactions between business logic objects.
+						</aside>
+					</section>
+
+						<section>
+							Negroni for middleware
+						</section>
+
+					<section>
+						<ul>
+							<li>Super-simple middleware management</li>
+							<li>Nice OOB functionality with panic catcher and basic logging</li>
+							<li>Very easy middleware pattern plays nice with native HTTP stuff</li>
+							<li>Hooks for pre and post handler processing</li>
+						</ul>
+					</section>
+
+					<section>
+						Viper for configuration
+					</section>
+
+					<section>
+						<ul>
+							<li>Extremely configurable</li>
+							<li>In wide usage in a number of prominent Go projects</li>
+							<li>Powerful feature set includes things like wathching remote services (etcd, Consul) for config changes</li>
+							<li>Intelligent precedence and flag usage</li>
+						</ul>
+					</section>
+
+					<section>
+						Logrus for logging
+					</section>
+
+					<section>
+						<ul>
+							<li>Drop-in replacement for stdlig's log package</li>
+							<li>Runtime-configurable formatting makes logging easy to consume either as a dev or in prod</li>
+							<li>3rd-party hooks for almost any exception service you can name</li>
+							<li>API encourages structured logging</li>
+						</ul>
+						<aside class="notes">
+							If you're making services, you owe it to yourself to settle on a simple pattern for structured logging. Logrus helps with that.
+						</aside>
+					</section>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
