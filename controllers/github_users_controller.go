@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 	"github.com/trevrosen/git-grabber/db"
 )
 
@@ -34,19 +36,19 @@ func userCreateHandler(dbi db.DBInteractor) http.HandlerFunc {
 			return
 		}
 
-		user := &db.GitHubUser{
+		ghUser := &db.GitHubUser{
 			Username: input.Username,
 		}
 
 		// TODO: better status code?
-		if err = dbi.SaveRecord(user); err != nil {
+		if err = dbi.SaveRecord(ghUser); err != nil {
 			logMsg(r, err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
 		// TODO: better status code?
-		jsonBytes, err := serializedGitHubUser(user)
+		jsonBytes, err := serializedGitHubUser(ghUser)
 		if err != nil {
 			logMsg(r, err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
@@ -60,7 +62,29 @@ func userCreateHandler(dbi db.DBInteractor) http.HandlerFunc {
 // userShowHandler handles GET /users/{username}
 func userShowHandler(dbi db.DBInteractor) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// find/serialize a user
+		var err error
+		var ghUser *db.GitHubUser
+		username := mux.Vars(r)["username"]
+
+		if ghUser, err = dbi.FindGitHubUserByName(username); err != nil {
+			if err == gorm.ErrRecordNotFound {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		// TODO: better status code?
+		jsonBytes, err := serializedGitHubUser(ghUser)
+		if err != nil {
+			logMsg(r, err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(jsonBytes)
 	})
 }
 
