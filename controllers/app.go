@@ -40,3 +40,7 @@ func logMsg(r *http.Request, msg string) {
 	hi := httpInformant.(*middleware.HttpInformant)
 	hi.SetMessage(msg)
 }
+
+func SetLogger() {
+
+}
