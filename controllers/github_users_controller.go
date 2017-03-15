@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -12,7 +13,7 @@ import (
 // GitHubUserCreateUserType represents the payload coming off the wire
 type GitHubUserCreateUserType struct {
 	// Username is the GitHub username
-	Username string
+	Username string `json:"username"`
 }
 
 type GitHubUserMediaType struct {
@@ -36,6 +37,13 @@ func userCreateHandler(dbi db.DBInteractor) http.HandlerFunc {
 			return
 		}
 
+		if !createGitHubUserUserTypeIsValid(input) {
+			msg := fmt.Sprintf("JSON schema error")
+			logMsg(r, msg)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
 		ghUser := &db.GitHubUser{
 			Username: input.Username,
 		}
@@ -54,8 +62,8 @@ func userCreateHandler(dbi db.DBInteractor) http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		w.Write(jsonBytes)
 		w.WriteHeader(http.StatusCreated)
+		w.Write(jsonBytes)
 	})
 }
 
@@ -96,4 +104,13 @@ func serializedGitHubUser(ghUser *db.GitHubUser) ([]byte, error) {
 	jsonSource.Username = ghUser.Username
 
 	return json.Marshal(jsonSource)
+}
+
+// createGitHubUserUserTypeIsValid returns true if it's valid, false otherwise
+func createGitHubUserUserTypeIsValid(ghut *GitHubUserCreateUserType) bool {
+	if ghut.Username == "" {
+		return false
+	}
+	return true
+
 }
