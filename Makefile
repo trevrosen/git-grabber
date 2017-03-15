@@ -39,9 +39,6 @@ run:
 db_create:
 	mysql -u$(GIT_GRABBER_DB_USER) -p$(GIT_GRABBER_DB_PASS) -e "CREATE DATABASE $(GIT_GRABBER_DB_NAME)"
 
-migrate:
-	cd db/migrate && goose mysql "$(GIT_GRABBER_DB_USER):$(GIT_GRABBER_DB_PASS)@($(GIT_GRABBER_DB_HOST):$(GIT_GRABBER_DB_PORT))/$(GIT_GRABBER_DB_NAME)" up
-
 test:
 	go test -v $(excluding_vendor)
 	cd _testing && ginkgo
@@ -52,6 +49,3 @@ doc:
 
 vet:
 	go vet ./...
-
-docker:
-	docker build -t git-grabber .

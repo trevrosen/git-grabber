@@ -2,11 +2,12 @@ package main_test
 
 import (
 	"fmt"
+	"log"
 
-	"github.com/bypasslane/clortho/db"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/viper"
+	"github.com/trevrosen/git-grabber/db"
 
 	"testing"
 )
@@ -23,7 +24,13 @@ var (
 
 var _ = BeforeSuite(func() {
 	setConfig()
-	sdb = db.NewSqlDB()
+	sdb, err = db.NewSqlDB()
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	sdb.Gorm.AutoMigrate(&db.GitHubUser{})
 })
 
 var _ = AfterEach(func() {
@@ -34,22 +41,22 @@ var _ = AfterEach(func() {
 })
 
 // currentCounts returns the count for a db/table combination
-func currentCounts(db *db.Cdb, table string) int {
+func currentCounts(db *db.SqlDB, table string) int {
 	var count int
 	db.Gorm.Table(table).Count(&count)
 	return count
 }
 
 // currentCountsAccountables returns the undeleted count for the accountables table
-func currentCountsAccountables(db *db.Cdb) int {
+func currentCountsAccountables(db *db.SqlDB) int {
 	var count int
-	db.Gorm.Table("accountables").Where("deleted_at IS NULL").Count(&count)
+	db.Gorm.Table("git_hub_users").Where("deleted_at IS NULL").Count(&count)
 	return count
 }
 
 // truncateTables truncates the given table in both DBs
 func truncateTables() error {
-	err := apidb.Gorm.Exec("TRUNCATE TABLE git_hub_users").Error
+	err := sdb.Gorm.Exec("TRUNCATE TABLE git_hub_users").Error
 	if err != nil {
 		return err
 	}
@@ -60,6 +67,6 @@ func truncateTables() error {
 func setConfig() error {
 	viper.SetDefault("environment", "test")
 	viper.SetConfigName("config")
-	viper.AddConfigPath("$HOME/.clortho")
+	viper.AddConfigPath("$HOME/.git-grabber")
 	return viper.ReadInConfig()
 }
