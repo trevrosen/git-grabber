@@ -6,9 +6,9 @@ Sometimes the best way to get a new language into your organization is with a po
 I've used this stack and structure a few times for microservices. I find it easy to deal with and flexible enough to carry forward some of the (sadly necessary) warts that might exist in legacy projects.
 
 ## What it does
-* Allow you to specify a GitHub user you want to track
-* Retrieve some information about that user
-* Uses MySQL for a backend
+* Boot
+* Not a whole lot, but not nothin
+* Settle down, this is is just here to demo a **structure**
 
 ## Prerequisites/Conventions
 
