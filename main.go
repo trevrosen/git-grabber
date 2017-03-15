@@ -5,9 +5,11 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/trevrosen/git-grabber/controllers"
 	"github.com/trevrosen/git-grabber/db"
+	"github.com/trevrosen/git-grabber/middleware"
 )
 
 var sdb *db.SqlDB
@@ -41,4 +43,19 @@ func setConfig() error {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("$HOME/.git-grabber")
 	return viper.ReadInConfig()
+}
+
+// setupLogging configures a global logger and injects it into packages that support logger injection
+func setupLogging() {
+	logger := logrus.New()
+	logger.Formatter = &logrus.JSONFormatter{}
+
+	// Log everything and colorize logs in development mode
+	// You can customize to any level but "info" in development mode
+	if viper.GetString("environment") == "development" {
+		logger.Formatter = &logrus.TextFormatter{}
+		logger.Level = logrus.DebugLevel
+	}
+
+	middleware.SetLogger(logger)
 }

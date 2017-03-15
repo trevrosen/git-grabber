@@ -10,7 +10,11 @@ type GitHubUser struct {
 
 // FindGitHubUserByName returns the DB record of the provided GitHub user
 func (sdb *SqlDB) FindGitHubUserByName(name string) (*GitHubUser, error) {
+	var err error
 	user := &GitHubUser{}
-	err := sdb.Gorm.Where("username = ?", name).First(user).Error
-	return user, err
+	if err = sdb.Gorm.Where("username = ?", name).First(user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

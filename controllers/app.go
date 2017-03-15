@@ -14,7 +14,7 @@ func App(dbi db.DBInteractor) http.Handler {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/status", statusHandler()).Methods("GET")
-	router.HandleFunc("/users/", userCreateHandler(dbi)).Methods("POST")
+	router.HandleFunc("/users", userCreateHandler(dbi)).Methods("POST")
 	router.HandleFunc("/users/{username}", userShowHandler(dbi)).Methods("GET")
 
 	n := negroni.New(negroni.NewRecovery())
@@ -39,4 +39,8 @@ func logMsg(r *http.Request, msg string) {
 	httpInformant := context.Get(r, middleware.HttpInformantKey)
 	hi := httpInformant.(*middleware.HttpInformant)
 	hi.SetMessage(msg)
+}
+
+func SetLogger() {
+
 }

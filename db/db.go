@@ -11,7 +11,10 @@ import (
 
 // DBInteractor is the interface for talking to a database
 type DBInteractor interface {
+	// FindGitHubUserByName returns a GitHubUser from the database
 	FindGitHubUserByName(string) (*GitHubUser, error)
+	// SaveRecord is a wrapper for Gorm's reflection-based persistence
+	SaveRecord(interface{}) error
 }
 
 // SqlDB implements DBInteractor for a Gorm
@@ -45,4 +48,9 @@ func dbString() string {
 	port := viper.GetString(strings.Join([]string{environment, "port"}, "."))
 	name := viper.GetString(strings.Join([]string{environment, "name"}, "."))
 	return fmt.Sprintf("%v:%v@(%v:%v)/%v?parseTime=true", user, pass, host, port, name)
+}
+
+// SaveRecord attempts to persist the model value
+func (sdb *SqlDB) SaveRecord(model interface{}) error {
+	return sdb.Gorm.Save(model).Error
 }
