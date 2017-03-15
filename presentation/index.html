@@ -31,6 +31,27 @@
 					<br />
 					<small>(download <a href="https://github.com/trevrosen/git-grabber">https://github.com/trevrosen/git-grabber</a>)</small>
 				</section>
+
+				<section>
+					<p>Please clone</p>
+					<p>https://github.com/trevrosen/git-grabber</p>
+				</section>
+
+				<section>
+					No, really.
+				</section>
+
+				<section>
+					https://github.com/trevrosen/git-grabber
+				</section>
+
+				<section>
+					Look at the README to find where things are.
+					<aside class="notes">
+						Shows structure (not much else), leaves some things as exercises to the reader.
+					</aside>
+				</section>
+
 				<section>
 					"software is eating the world"
 					<aside class="notes">
@@ -41,7 +62,7 @@
 				</section>
 
 				<section>
-					TK MARC ANDREESEN AND HIS HEAD SAYING THINGS
+					<img src="images/mark_nom_nom.jpg" alt="Software is eating the world" />
 				</section>
 
 				<section>
@@ -73,7 +94,7 @@
 
 				<section>
 					<blockquote>
-						"They are out there, they are quiet, but they are using out stuff to get stuff done."
+						"They are out there, they are quiet, but they are using our stuff to get stuff done."
 					</blockquote>
 						<p><a href="http://www.hanselman.com/blog/DarkMatterDevelopersTheUnseen99.aspx">Dark Matter Developers - The Unseen 99%</a>
 						<aside class="notes">
@@ -331,6 +352,26 @@
 					</section>
 
 					<section>
+						<p>How a mock interface works</p>
+						<pre>
+							<code data-trim>
+type MockSdb struct {
+	OnFindGitHubUserByName func(string) (*GitHubUser, error)
+	OnSaveRecord           func(interface{}) error
+}
+
+func (mdb *MockSdb) FindGitHubUserByName(name string) (*GitHubUser, error) {
+	return mdb.OnFindGitHubUserByName(name)
+}
+
+func (mdb *MockSdb) SaveRecord(record interface{}) error {
+	return mdb.OnSaveRecord(record)
+}
+							</code>
+						</pre>
+					</section>
+
+					<section>
 						Why Ginkgo?
 					</section>
 
@@ -415,7 +456,7 @@
 
 					<section>
 						<ul>
-							<li>Drop-in replacement for stdlig's log package</li>
+							<li>Drop-in replacement for stdlib's log package</li>
 							<li>Runtime-configurable formatting</li>
 							<li>3rd-party hooks for exception services</li>
 							<li>API encourages structured logging</li>

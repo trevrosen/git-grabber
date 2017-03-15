@@ -21,14 +21,13 @@ I've used this stack and structure a few times for microservices. I find it easy
 
 ## Stack
 
-* [Gorilla Mux](https://github.com/gorilla/mux) - URL routing
+* [Gorilla Mux](https://github.com/gorilla/mux) - URL routing/multiplexing
 * [Logrus](https://github.com/sirupsen/logrus) - configurable logging
 * [Negroni](https://github.com/urfave/negroni) - middleware management
 * [Viper](https://github.com/spf13/viper) - unified configuration
 * [Gorm](https://github.com/jinzhu/gorm) - ORM-style DB access
 * [Ginkgo](https://github.com/onsi/ginkgo) - BDD-style testing (just for DB unit tests)
 * [Glide](https://github.com/Masterminds/glide) - dependency management
-* [Goose](https://github.com/pressly/goose) - DB migrations (not a huge fan of this one)
 
 ## Structure
 Here's how I structure into subpackages and directories:
