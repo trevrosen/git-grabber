@@ -1,5 +1,10 @@
 # git-grabber
 
+## A presentation
+Originally constructed for the March 2017 presentation at the ATX Golang
+meetup.
+
+
 ## A demo app
 Sometimes the best way to get a new language into your organization is with a port of something you've already got.
 
