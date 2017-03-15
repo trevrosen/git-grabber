@@ -30,6 +30,8 @@ var _ = BeforeSuite(func() {
 		log.Fatalln(err)
 	}
 
+	fmt.Println(sdb)
+
 	sdb.Gorm.AutoMigrate(&db.GitHubUser{})
 })
 

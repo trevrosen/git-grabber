@@ -52,5 +52,5 @@ func dbString() string {
 
 // SaveRecord attempts to persist the model value
 func (sdb *SqlDB) SaveRecord(model interface{}) error {
-	return sdb.Gorm.Save(&model).Error
+	return sdb.Gorm.Save(model).Error
 }
